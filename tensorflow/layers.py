@@ -17,6 +17,7 @@ def conv2d(name, input, shape,
         initializer=tf.contrib.layers.xavier_initializer(),
         strides=[1,1,1,1],
         padding='SAME',
+        bias=True,
         activation='relu'):
     '''
     2D convolution Layer with smart variable reuse.
@@ -25,15 +26,16 @@ def conv2d(name, input, shape,
     def conv2d_helper(input, shape, dtype, initializer, strides, padding, activation):
         kernel = tf.get_variable('weights', shape=shape, dtype=dtype,
                 initializer=initializer)
-        biases = tf.get_variable('biases', shape=shape[-1], dtype=dtype,
-                initializer=tf.constant_initializer(0.0))
-
         variable_summaries(kernel, 'kernels')
-        variable_summaries(biases, 'biases')
-
         conv = tf.nn.conv2d(input, kernel, strides, padding=padding)
-        biased_conv = tf.nn.bias_add(conv, biases)
-        output = activate(biased_conv, type=activation)
+
+        if bias:
+            biases = tf.get_variable('biases', shape=shape[-1], dtype=dtype,
+                    initializer=tf.constant_initializer(0.0))
+            variable_summaries(biases, 'biases')
+            conv = tf.nn.bias_add(conv, biases)
+
+        output = activate(conv, type=activation)
         return output, kernel, biases
 
     with tf.variable_scope(name) as scope:
