@@ -36,7 +36,11 @@ def conv2d(name, input, shape,
             conv = tf.nn.bias_add(conv, biases)
 
         output = activate(conv, type=activation)
-        return output, kernel, biases
+
+        if bias:
+            return output, kernel, biases
+        else:
+            return output, kernel
 
     with tf.variable_scope(name) as scope:
         try:
