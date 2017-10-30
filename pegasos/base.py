@@ -100,7 +100,7 @@ class PegasosBase(BaseEstimator, ClassifierMixin):
             np_major = np_minor = np_micro = 0
             warnings.warn('failed to get numpy version', Warning)
 
-        if np_major >= 1 and np_minor >= 7 and np_micro >= 1:
+        if int(np_major) >= 1 and int(np_minor) >= 7 and int(np_micro) >= 1:
             d = d.astype(np.int32, copy=False)
         else:
             warnings.warn('numpy <= 1.7.1 results in less efficient predictions', Warning)
